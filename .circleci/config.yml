@@ -22,4 +22,4 @@ workflows:
           name: deploy-production
           stack-name: hackathon-lambda-2
           template: ./hackathon2/template.yaml
-          s3-bucket: travis-reed-hackisu-lambda-lambda-code
+          s3-bucket: travis-reed-hackisu-lambda-code
