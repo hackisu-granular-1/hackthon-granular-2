@@ -1,16 +1,25 @@
-version: 2
+version: 2.1
+orbs:
+  aws-cli: circleci/aws-cli@0.1.16
+  aws-serverless: circleci/aws-serverless@1.0.1
 jobs:
-  build:
-    docker:
-      - image: debian:stretch
-
+  aws-cli-create-bucket:
+    executor: aws-cli/default
     steps:
       - checkout
-
-      - run:
-          name: Greeting
-          command: echo Hello, world.
-
-      - run:
-          name: Print the Current Time
-          command: date
+      - aws-cli/setup:
+          profile-name: default
+      - run: aws s3 mb s3://travis-reed-hackisu-lambda-code
+workflows:
+  deploy:
+    jobs:
+      - aws-cli-create-bucket:
+          context: AWS
+      - aws-serverless/deploy:
+          requires:
+            - aws-cli-create-bucket
+          context: AWS
+          name: deploy-production
+          stack-name: hackathon-lambda-2
+          template: ./hackathon2/template.yaml
+          s3-bucket: travis-reed-hackisu-lambda-lambda-code
